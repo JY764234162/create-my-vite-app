@@ -8,6 +8,7 @@
 ```bash
 npm create my-vite-app
 ```
+或
 ```bash
 npx create-my-vite-app
 ```
