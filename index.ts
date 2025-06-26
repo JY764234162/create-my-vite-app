@@ -1,5 +1,7 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
 import minimist from "minimist";
 import prompts from "prompts";
 import pc from "picocolors";
@@ -17,7 +19,6 @@ const {
   yellow,
 } = pc;
 
-// const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const argv = minimist(process.argv.slice(2), {
   default: { help: false },
@@ -48,6 +49,10 @@ const renameFiles = {
   _gitignore: ".gitignore",
 };
 
+function formatTargetDir(targetDir) {
+  return targetDir?.trim().replace(/\/+$/g, "");
+}
+
 async function init() {
   const help = argv.help || argv.h;
   if (help) {
@@ -65,7 +70,7 @@ async function init() {
         {
           type: argTargetDir ? null : "text",
           name: "projectName",
-          message: reset("Project name:"),
+          message: reset("项目名:"),
           initial: defaultProjectName,
           onState: (state) => {
             targetDir = formatTargetDir(state.value) || defaultProjectName;
@@ -76,8 +81,10 @@ async function init() {
           name: "template",
           message: "请选择项目模板",
           choices: [
-            { title: blueBright("react模板"), value: "react" },
+            { title: blue("react模板"), value: "react" },
+            { title: yellow("react-ts模板"), value: "react-ts" },
             { title: greenBright("vue模板"), value: "vue" },
+            { title: cyan("vue-ts模板"), value: "vue-ts" },
           ],
         },
       ],
@@ -95,7 +102,13 @@ async function init() {
 
   const root = path.join(process.cwd(), targetDir);
   //选择的模版目录路径
-  const templateDir = path.join(__dirname, "templates", `template-${template}`);
+
+  const templateDir = path.resolve(
+    fileURLToPath(import.meta.url),
+    "../..",
+    "templates",
+    `template-${template}`
+  );
 
   if (fs.existsSync(targetDir)) {
     console.log(pc.red(`目录 ${targetDir} 已存在！`));
@@ -157,10 +170,6 @@ async function init() {
     pc.blue(`\n  cd ${targetDir}
   npm install`)
   );
-}
-
-function formatTargetDir(targetDir) {
-  return targetDir?.trim().replace(/\/+$/g, "");
 }
 
 export { init };

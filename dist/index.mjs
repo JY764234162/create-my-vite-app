@@ -1,5 +1,6 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import minimist from 'minimist';
 import prompts from 'prompts';
 import pc from 'picocolors';
@@ -37,6 +38,9 @@ ${greenBright("vue\u6A21\u677F")}
 const renameFiles = {
   _gitignore: ".gitignore"
 };
+function formatTargetDir(targetDir) {
+  return targetDir?.trim().replace(/\/+$/g, "");
+}
 async function init() {
   const help = argv.help || argv.h;
   if (help) {
@@ -52,7 +56,7 @@ async function init() {
         {
           type: argTargetDir ? null : "text",
           name: "projectName",
-          message: reset("Project name:"),
+          message: reset("\u9879\u76EE\u540D:"),
           initial: defaultProjectName,
           onState: (state) => {
             targetDir = formatTargetDir(state.value) || defaultProjectName;
@@ -63,8 +67,10 @@ async function init() {
           name: "template",
           message: "\u8BF7\u9009\u62E9\u9879\u76EE\u6A21\u677F",
           choices: [
-            { title: blueBright("react\u6A21\u677F"), value: "react" },
-            { title: greenBright("vue\u6A21\u677F"), value: "vue" }
+            { title: blue("react\u6A21\u677F"), value: "react" },
+            { title: yellow("react-ts\u6A21\u677F"), value: "react-ts" },
+            { title: greenBright("vue\u6A21\u677F"), value: "vue" },
+            { title: cyan("vue-ts\u6A21\u677F"), value: "vue-ts" }
           ]
         }
       ],
@@ -80,7 +86,12 @@ async function init() {
   }
   const template = result.template;
   const root = path.join(process.cwd(), targetDir);
-  const templateDir = path.join(__dirname, "templates", `template-${template}`);
+  const templateDir = path.resolve(
+    fileURLToPath(import.meta.url),
+    "../..",
+    "templates",
+    `template-${template}`
+  );
   if (fs.existsSync(targetDir)) {
     console.log(pc.red(`\u76EE\u5F55 ${targetDir} \u5DF2\u5B58\u5728\uFF01`));
     process.exit(1);
@@ -126,9 +137,6 @@ async function init() {
   cd ${targetDir}
   npm install`)
   );
-}
-function formatTargetDir(targetDir) {
-  return targetDir?.trim().replace(/\/+$/g, "");
 }
 
 export { init };
