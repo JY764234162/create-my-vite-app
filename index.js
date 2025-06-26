@@ -1,4 +1,3 @@
-#!/usr/bin/env node
-const { init } = require('./init');
+import { init } from "./dist/index.mjs";
 
 init();
