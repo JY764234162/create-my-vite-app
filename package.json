@@ -10,7 +10,6 @@
     "vite"
   ],
   "files": [
-    "init.js",
     "index.js",
     "templates/**/*",
     "dist"
