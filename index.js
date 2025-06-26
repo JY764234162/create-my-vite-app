@@ -1,3 +1,3 @@
-import { init } from "./dist/index.mjs";
+#!/usr/bin/env node
 
-init();
+import "./dist/index.mjs";

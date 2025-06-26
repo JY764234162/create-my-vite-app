@@ -138,5 +138,4 @@ async function init() {
   npm install`)
   );
 }
-
-export { init };
+init();

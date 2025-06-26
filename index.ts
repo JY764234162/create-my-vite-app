@@ -19,7 +19,6 @@ const {
   yellow,
 } = pc;
 
-
 const argv = minimist(process.argv.slice(2), {
   default: { help: false },
   alias: { h: "help", t: "template" },
@@ -171,5 +170,4 @@ async function init() {
   npm install`)
   );
 }
-
-export { init };
+init();
